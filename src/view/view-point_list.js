@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import { createElement } from '../render';
 
 const createPointListTemplate = () => '<ul class="trip-events__list"></ul>';
 
