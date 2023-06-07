@@ -8,18 +8,19 @@ import SortingView from '../view/view-sorting';
 export default class BoardPresenter {
   pointListComponent = new PointListView();
 
-  constructor({ boardContainer }) {
+  constructor({ boardContainer, pointsModel }) {
     this.boardContainer = boardContainer;
+    this.pointsModel = pointsModel;
   }
 
   init() {
+    this.points = [...this.pointsModel.points];
     render(new SortingView(), this.boardContainer);
     render(this.pointListComponent, this.boardContainer);
     render(new CreationFormView(), this.pointListComponent.getElement());
-    render(new PointView(), this.pointListComponent.getElement());
     render(new RedactingFormView(), this.pointListComponent.getElement());
-    for (let i = 0; i < 3; i++) {
-      render(new PointView(), this.pointListComponent.getElement());
+    for (let i = 0; i < this.points.length; i++) {
+      render(new PointView({point: this.points[i]}), this.pointListComponent.element);
     }
   }
 }
