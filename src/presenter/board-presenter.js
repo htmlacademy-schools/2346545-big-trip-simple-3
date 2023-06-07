@@ -3,11 +3,10 @@ import RedactingFormView from '../view/view-redacting_form';
 import PointView from '../view/view-point';
 import PointListView from '../view/view-point_list';
 import SortingView from '../view/view-sorting';
-import { render } from '../render';
+import { render, replace } from '../framework/render';
 
 export default class BoardPresenter {
   #boardContainer = null;
-  #points = null;
   #pointListComponent = new PointListView();
   #pointsModel = null;
 
@@ -18,58 +17,56 @@ export default class BoardPresenter {
   }
 
   init() {
-    this.#points = [...this.#pointsModel.points];
-    if(this.#points.length === 0) {
+    const points = [...this.#pointsModel.points];
+    if (points.length === 0) {
       render(new NoPointsView(), this.#boardContainer);
     }
-    else{
+    else {
       render(new SortingView(), this.#boardContainer);
       render(this.#pointListComponent, this.#boardContainer);
-      for (let i = 0; i < this.#points.length; i++) {
-        this.#renderPoint(this.#points[i]);
+      for (let i = 0; i < points.length; i++) {
+        this.#renderPoint(points[i]);
       }
     }
   }
 
   #renderPoint = (point) => {
-    const pointComponent = new PointView(point);
-    const pointEditComponent = new RedactingFormView(point);
 
-    const closeFormOnEscape = (evt) => {
+    const ecsKeyDown = (evt) => {
       if (evt.key === 'Escape') {
         evt.preventDefault();
         // eslint-disable-next-line no-use-before-define
         replaceFormToPoint();
+        document.body.removeEventListener('keydown', ecsKeyDown);
       }
     };
 
+    const pointComponent = new PointView({
+      point: point,
+      onEditClick: () => {
+        // eslint-disable-next-line no-use-before-define
+        replacePointToForm.call(this);
+        document.body.addEventListener('keydown', ecsKeyDown);
+      }
+    }
+    );
+
+    const redactingFormComponent = new RedactingFormView({
+      point: point,
+      onFormSubmit: () => {
+        // eslint-disable-next-line no-use-before-define
+        replaceFormToPoint.call(this);
+        document.body.removeEventListener('keydown', ecsKeyDown);
+      }
+    });
+
     const replaceFormToPoint = () => {
-      this.#pointListComponent.element.replaceChild(pointComponent.element, pointEditComponent.element);
-      document.body.addEventListener('keydown', closeFormOnEscape());
+      replace(pointComponent, redactingFormComponent);
     };
 
     const replacePointToForm = () => {
-      this.#pointListComponent.element.replaceChild(pointEditComponent.element, pointComponent.element);
-      document.body.removeEventListener('keydown', closeFormOnEscape());
+      replace(redactingFormComponent, pointComponent);
     };
-
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', (evt) => {
-      evt.preventDefault();
-      replacePointToForm();
-      document.body.addEventListener('keydown', closeFormOnEscape());
-    });
-
-    pointEditComponent.element.querySelector('.event__save-btn').addEventListener('click', (evt) => {
-      evt.preventDefault();
-      replaceFormToPoint();
-      document.body.removeEventListener('keydown', closeFormOnEscape());
-    });
-
-    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', (evt) => {
-      evt.preventDefault();
-      replaceFormToPoint();
-      document.body.removeEventListener('keydown', closeFormOnEscape());
-    });
 
     render(pointComponent, this.#pointListComponent.element);
   };

@@ -24,4 +24,4 @@ const getCityNameById = (id) => destinationsList.find((destination) => destinati
 const getCityPictureById = (id) => destinationsList.find((destination) => destination.id === id).pictures.src;
 const getIdByCityName = (name) => destinationsList.find((destination) => destination.name === name).id;
 
-export { getCityDescriptionById, getCityNameById, getCityPictureById, getIdByCityName, getRandDestination };
+export { destinationsList, getCityDescriptionById, getCityNameById, getCityPictureById, getIdByCityName, getRandDestination };
