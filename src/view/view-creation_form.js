@@ -1,31 +1,14 @@
 import { createElement } from '../render';
+import { getCityDescriptionById, getCityNameById, getCityPictureById } from '../mock/destination';
+import { convertToFormDate, createOffersTemplate } from '../util';
 
-import { getCityDescriptionById, getCityPictureById, getCityNameById } from '../mock/destination';
-import { getRandPoint } from '../mock/point';
-import { convertToFormDate } from '../util';
-import { getOfferName, getOfferPrice } from '../mock/data';
-
-function createOffersTemplate(offers) {
-  return offers.map((offer) => `
-    <div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-      <label class="event__offer-label" for="event-offer-luggage-1">
-        <span class="event__offer-title">${getOfferName(offer)}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${getOfferPrice(offer)}</span>
-      </label>
-    </div>
-  `).join('');
-}
-
-const createCreationFormTemplate = () => {
-  const point = getRandPoint();
-  const {dateFrom, destination, offers, type} = point;
+const createCreationFormTemplate = (point) => {
+  const { dateFrom, destination, offers, type } = point;
   const date = convertToFormDate(dateFrom);
   const offersTemplate = createOffersTemplate(offers);
   const visibility = offers.length === 0 ? 'visually-hidden' : '';
 
-  return(
+  return (
     `<form class="event event--edit" action="#" method="post">
         <header class="event__header">
           <div class="event__type-wrapper">
@@ -143,19 +126,27 @@ const createCreationFormTemplate = () => {
 };
 
 export default class CreationFormView {
-  getTemplate() {
-    return createCreationFormTemplate();
+  #element = null;
+  #point = null;
+
+  constructor(point) {
+    this.#point = point;
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+
+  get template() {
+    return createCreationFormTemplate(this.#point);
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }

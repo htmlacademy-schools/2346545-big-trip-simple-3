@@ -1,26 +1,72 @@
-import { render } from '../render';
-import CreationFormView from '../view/view-creation_form';
+import RedactingFormView from '../view/view-redacting_form';
 import PointView from '../view/view-point';
 import PointListView from '../view/view-point_list';
-import RedactingFormView from '../view/view-redacting_form';
 import SortingView from '../view/view-sorting';
+import { render } from '../render';
 
 export default class BoardPresenter {
-  pointListComponent = new PointListView();
+  #boardContainer = null;
+  #points = null;
+  #pointListComponent = new PointListView();
+  #pointsModel = null;
+
 
   constructor({ boardContainer, pointsModel }) {
-    this.boardContainer = boardContainer;
-    this.pointsModel = pointsModel;
+    this.#boardContainer = boardContainer;
+    this.#pointsModel = pointsModel;
   }
 
   init() {
-    this.points = [...this.pointsModel.points];
-    render(new SortingView(), this.boardContainer);
-    render(this.pointListComponent, this.boardContainer);
-    render(new CreationFormView(), this.pointListComponent.getElement());
-    render(new RedactingFormView(), this.pointListComponent.getElement());
-    for (let i = 0; i < this.points.length; i++) {
-      render(new PointView({point: this.points[i]}), this.pointListComponent.element);
+    this.#points = [...this.#pointsModel.points];
+    render(new SortingView(), this.#boardContainer);
+    render(this.#pointListComponent, this.#boardContainer);
+    for (let i = 0; i < this.#points.length; i++) {
+      // eslint-disable-next-line no-console
+      console.log(this.#points[i]);
+      this.#renderPoint(this.#points[i]);
     }
   }
+
+  #renderPoint = (point) => {
+    const pointComponent = new PointView(point);
+    const pointEditComponent = new RedactingFormView(point);
+
+    const closeFormOnEscape = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        // eslint-disable-next-line no-use-before-define
+        replaceFormToPoint();
+      }
+    };
+
+    const replaceFormToPoint = () => {
+      this.#pointListComponent.element.replaceChild(pointComponent.element, pointEditComponent.element);
+      document.body.addEventListener('keydown', closeFormOnEscape());
+    };
+
+    const replacePointToForm = () => {
+      this.#pointListComponent.element.replaceChild(pointEditComponent.element, pointComponent.element);
+      document.body.removeEventListener('keydown', closeFormOnEscape());
+    };
+
+    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', (evt) => {
+      evt.preventDefault();
+      replacePointToForm();
+      document.body.addEventListener('keydown', closeFormOnEscape());
+    });
+
+    pointEditComponent.element.querySelector('.event__save-btn').addEventListener('click', (evt) => {
+      evt.preventDefault();
+      replaceFormToPoint();
+      document.body.removeEventListener('keydown', closeFormOnEscape());
+    });
+
+    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', (evt) => {
+      evt.preventDefault();
+      replaceFormToPoint();
+      document.body.removeEventListener('keydown', closeFormOnEscape());
+    });
+
+    render(pointComponent, this.#pointListComponent.element);
+  };
 }

@@ -1,21 +1,21 @@
 import { createElement } from '../render';
-import { convertToEventDateTime, convertToEventDate, convertToDateTime, convertToTime } from '../util';
+import { convertToDateTime, convertToEventDate, convertToEventDateTime, convertToTime } from '../util';
 import { getCityNameById } from '../mock/destination';
 import { getOfferName, getOfferPrice } from '../mock/data';
 
 
-function createOffersTemplate(offers) {
-  return offers.map((offer) => `
+const createOffersTemplate = (offers) => (
+  offers.map((offer) => `
     <li class="event__offer">
       <span class="event__offer-title">${getOfferName(offer)}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${getOfferPrice(offer)}</span>
     </li>
-  `).join('');
-}
+  `).join('')
+);
 
 const createPointTemplate = (point) => {
-  const {basePrice, dateFrom, dateTo, destination, offers, type} = point;
+  const { basePrice, dateFrom, dateTo, destination, offers, type } = point;
   const eventDateTime = convertToEventDateTime(dateFrom);
   const eventDate = convertToEventDate(dateFrom);
   const fromDateTime = convertToDateTime(dateFrom);
@@ -24,7 +24,7 @@ const createPointTemplate = (point) => {
   const toTime = convertToTime(dateTo);
   const offersTemplate = createOffersTemplate(offers);
 
-  return(
+  return (
     `<li class="trip-events__item">
         <div class="event">
           <time class="event__date" datetime="${eventDateTime}">${eventDate}</time>
@@ -56,23 +56,26 @@ const createPointTemplate = (point) => {
 
 
 export default class PointView {
-  constructor({ point }) {
-    this.point = point;
+  #element = null;
+  #point = null;
+
+  constructor(point) {
+    this.#point = point;
   }
 
-  getTemplate() {
-    return createPointTemplate(this.point);
+  get template() {
+    return createPointTemplate(this.#point);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
