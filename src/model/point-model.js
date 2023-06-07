@@ -1,9 +1,9 @@
-import { getRandPoint } from '../mock/point';
-
-const POINT_COUNT = 3;
-
 export default class PointModel {
-  #points = Array.from({length: POINT_COUNT}, getRandPoint);
+  #points = null;
+
+  constructor(points) {
+    this.#points = points;
+  }
 
   get points() {
     return this.#points;
