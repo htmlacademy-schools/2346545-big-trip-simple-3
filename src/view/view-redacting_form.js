@@ -1,4 +1,4 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import { getCityDescriptionById, getCityNameById } from '../mock/destination';
 import { convertToFormDate, createOffersTemplate } from '../util';
 
@@ -120,12 +120,17 @@ const createRedactingFormTemplate = (point) => {
       </form>`);
 };
 
-export default class RedactingFormView {
-  #element = null;
+export default class RedactingFormView extends AbstractView {
+  #handleFormSubmit = null;
   #point = null;
 
-  constructor(point) {
+  constructor({ point, onFormSubmit }) {
+    super();
     this.#point = point;
+    this.#handleFormSubmit = onFormSubmit;
+
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formSubmitHandler);
   }
 
 
@@ -133,15 +138,8 @@ export default class RedactingFormView {
     return createRedactingFormTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 }

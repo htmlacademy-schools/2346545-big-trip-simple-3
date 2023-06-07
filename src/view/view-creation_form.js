@@ -1,9 +1,9 @@
-import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view';
 import { getCityDescriptionById, getCityNameById, getCityPictureById } from '../mock/destination';
 import { convertToFormDate, createOffersTemplate } from '../util';
 
 const createCreationFormTemplate = (point) => {
-  const { dateFrom, destination, offers, type } = point;
+  const { dateFrom, destination, offers, type } = point.tripPoint;
   const date = convertToFormDate(dateFrom);
   const offersTemplate = createOffersTemplate(offers);
   const visibility = offers.length === 0 ? 'visually-hidden' : '';
@@ -125,28 +125,16 @@ const createCreationFormTemplate = (point) => {
   );
 };
 
-export default class CreationFormView {
-  #element = null;
+export default class CreationFormView extends AbstractView {
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
   }
 
 
   get template() {
     return createCreationFormTemplate(this.#point);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
