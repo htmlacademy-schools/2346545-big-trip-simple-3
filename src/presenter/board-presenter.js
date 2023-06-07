@@ -1,3 +1,4 @@
+import NoPointsView from '../view/view-no-point';
 import RedactingFormView from '../view/view-redacting_form';
 import PointView from '../view/view-point';
 import PointListView from '../view/view-point_list';
@@ -18,12 +19,15 @@ export default class BoardPresenter {
 
   init() {
     this.#points = [...this.#pointsModel.points];
-    render(new SortingView(), this.#boardContainer);
-    render(this.#pointListComponent, this.#boardContainer);
-    for (let i = 0; i < this.#points.length; i++) {
-      // eslint-disable-next-line no-console
-      console.log(this.#points[i]);
-      this.#renderPoint(this.#points[i]);
+    if(this.#points.length === 0) {
+      render(new NoPointsView(), this.#boardContainer);
+    }
+    else{
+      render(new SortingView(), this.#boardContainer);
+      render(this.#pointListComponent, this.#boardContainer);
+      for (let i = 0; i < this.#points.length; i++) {
+        this.#renderPoint(this.#points[i]);
+      }
     }
   }
 
