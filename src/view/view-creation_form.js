@@ -3,7 +3,7 @@ import { getCityDescriptionById, getCityNameById, getCityPictureById } from '../
 import { convertToFormDate, createOffersTemplate } from '../util';
 
 const createCreationFormTemplate = (point) => {
-  const { dateFrom, destination, offers, type } = point.tripPoint;
+  const { dateFrom, destination, offers, type } = point;
   const date = convertToFormDate(dateFrom);
   const offersTemplate = createOffersTemplate(offers);
   const visibility = offers.length === 0 ? 'visually-hidden' : '';

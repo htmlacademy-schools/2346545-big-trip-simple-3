@@ -29,7 +29,7 @@ const filter = {
 const createOffersTemplate = (offers) => {
   offers.map((offer) => `
     <div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer}" type="checkbox" name="event-offer-luggage" checked>
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer}" type="checkbox" name="event-offer-${offer}" checked>
       <label class="event__offer-label" for="event-offer-${offer}">
         <span class="event__offer-title">${getOfferName(offer)}</span>
         &plus;&euro;&nbsp;

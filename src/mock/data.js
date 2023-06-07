@@ -8,7 +8,7 @@ const descriptions = [
 ];
 
 const places = [
-  'Chamonix', 'Amsterdam', 'Geneva', 'Copenhagen', 'Murmansk', 'Liepaja'
+  'Chamonix', 'Amsterdam', 'Geneva', 'Copenhagen', 'Murino', 'Liepaja'
 ];
 
 const offers = [
