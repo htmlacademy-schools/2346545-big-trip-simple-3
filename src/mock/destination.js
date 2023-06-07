@@ -1,6 +1,6 @@
-import { descriptions, places } from './data';
 import { createPicture } from './picture';
-import { getRandID, getRandElement } from '../util';
+import { descriptions, places } from './data';
+import { getRandElement, getRandID } from '../util';
 
 const destinationsId = [];
 const destinationsList = [];
