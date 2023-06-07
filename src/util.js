@@ -26,10 +26,10 @@ const filter = {
   [FilterType.EVERYTHING]: (tripPoints) => tripPoints
 };
 
-const createOffersTemplate = (offers) => {
-  offers.map((offer) => `
+function createOffersTemplate(offersId) {
+  return offersId.map((offer) => `
     <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer}" type="checkbox" name="event-offer-${offer}" checked>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer}" type="checkbox" name="event-offer-${offer}" checked>
       <label class="event__offer-label" for="event-offer-${offer}">
         <span class="event__offer-title">${getOfferName(offer)}</span>
         &plus;&euro;&nbsp;
@@ -37,6 +37,14 @@ const createOffersTemplate = (offers) => {
       </label>
     </div>
   `).join('');
+}
+
+const sortByDay = (A, B) => (dayjs(A.dateFrom).diff(dayjs(B.dateFrom)));
+
+const sortByTime = (A, B) => {
+  const timeA = dayjs(A.dateTo).diff(dayjs(A.dateFrom));
+  const timeB = dayjs(B.dateTo).diff(dayjs(B.dateFrom));
+  return timeB - timeA;
 };
 
-export { convertToDateTime, convertToEventDate, convertToEventDateTime, convertToFormDate, convertToTime, convertToUpperCase, createOffersTemplate, filter, getRandElement, getRandID, getRandPicture, getRandPrice, isEscapeKey };
+export { convertToDateTime, convertToEventDate, convertToEventDateTime, convertToFormDate, convertToTime, convertToUpperCase, createOffersTemplate, filter, getRandElement, getRandID, getRandPicture, getRandPrice, isEscapeKey, sortByDay, sortByTime };
