@@ -39,4 +39,12 @@ const createOffersTemplate = (offers) => {
   `).join('');
 };
 
-export { convertToDateTime, convertToEventDate, convertToEventDateTime, convertToFormDate, convertToTime, convertToUpperCase, createOffersTemplate, filter, getRandElement, getRandID, getRandPicture, getRandPrice, isEscapeKey };
+const sortByDay = (A, B) => (dayjs(A.dateFrom).diff(dayjs(B.dateFrom)));
+
+const sortByTime = (A, B) => {
+  const timeA = dayjs(A.dateTo).diff(dayjs(A.dateFrom));
+  const timeB = dayjs(B.dateTo).diff(dayjs(B.dateFrom));
+  return timeB - timeA;
+};
+
+export { convertToDateTime, convertToEventDate, convertToEventDateTime, convertToFormDate, convertToTime, convertToUpperCase, createOffersTemplate, filter, getRandElement, getRandID, getRandPicture, getRandPrice, isEscapeKey, sortByDay, sortByTime };
