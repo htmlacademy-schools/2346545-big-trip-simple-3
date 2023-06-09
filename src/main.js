@@ -1,3 +1,6 @@
+//Module 6
+//Task 2
+
 import { render } from './framework/render';
 import BoardPresenter from './presenter/board-presenter';
 import FilterView from './view/view-filter';
