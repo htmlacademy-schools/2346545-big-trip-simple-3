@@ -5,7 +5,7 @@ export default class PointModel extends Observable {
   #destinations = [];
   #offers = [];
   #pointApiService = null;
-  #points = null;
+  #points = [];
 
   constructor({ pointsApiService }) {
     super();

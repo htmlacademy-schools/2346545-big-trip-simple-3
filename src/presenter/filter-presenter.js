@@ -19,8 +19,6 @@ export default class FilterPresenter {
   }
 
   get filters() {
-    // eslint-disable-next-line no-console
-    console.log(this.#pointsModel);
     return [FilterType.EVERYTHING, FilterType.FUTURE].map((type) => ({ type, name: FilterTypeDescriptions[type], count: filter[type](this.#pointsModel.points).length }));
   }
 

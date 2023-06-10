@@ -2,15 +2,14 @@ import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
-
 import { pointTypes } from '../const';
 import { convertToBasicFormat } from '../util';
 
 const BLANK_POINT = {
   basePrice: 800,
   type: 'flight',
-  dateFrom: '2019-07-18T20:20:13.375Z',
-  dateTo: '2019-07-18T21:40:13.375Z',
+  dateFrom: '2023-07-18T20:20:13.375Z',
+  dateTo: '2023-07-18T21:40:13.375Z',
   destination: 1,
   id: 0,
   offersIDs: []
@@ -66,36 +65,36 @@ const createEventDetailsTemplate = (point, destination, offers, isDisabled) => {
   </section>`;
 };
 
-const generateRollupButton = (isEditForm) => (
-  (!isEditForm) ? '' : `
+function generateRollupButton(isEditForm) {
+  return (!isEditForm) ? '' : `
   <button class="event__rollup-btn" type="button">
     <span class="visually-hidden">Open event</span>
-  </button>`
-);
+  </button>`;
+}
 
 const getTitleToDelete = (isEditForm, isDeleting) => {
   if (!isEditForm) { return 'Cancel'; }
   return (isDeleting) ? 'Deleting...' : 'Delete';
 };
 
-const createEventTypeList = (currentType, currentId) => (
-  pointTypes.map((type) => `
+function createEventTypeList(currentType, currentId) {
+  return pointTypes.map((type) => `
   <div class="event__type-item">
     <input id="event-type-${type}-${currentId}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${(type === currentType) ? 'checked' : ''}>
     <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-${currentId}">${type}</label>
   </div>`
-  ).join('')
-);
+  ).join('');
+}
 
-const createDestinationList = (dest) => (
-  dest.map((destination) => `
+function createDestinationList(dest) {
+  return dest.map((destination) => `
     <option value="${destination.name}"></option>`
-  ).join('')
-);
+  ).join('');
+}
 
 const createRedactingFormTemplate = (point, offers, destinationsList, isEditForm) => {
-  const currentDestinationName = destinationsList.find((destination) => destination.id === point.destination).name;
-  const currentDestination = destinationsList.find((destination) => destination.name === currentDestinationName);
+  const currDestName = destinationsList.find((destination) => destination.id === point.destination).name;
+  const currDest = destinationsList.find((destination) => destination.name === currDestName);
   return (
     `<li class="trip-events__item">
     <form class="event event--edit" action="#" method="post">
@@ -117,7 +116,7 @@ const createRedactingFormTemplate = (point, offers, destinationsList, isEditForm
         <label class="event__label event__type-output" for="event-destination-${point.id}">
         ${point.type}
         </label>
-        <input class="event__input event__input--destination" id="event-destination-${point.id}" type="text" name="event-destination" value="${he.encode(currentDestination.name)}" list="destination-list-${point.id}" ${(point.isDisabled) ? 'disabled' : ''}>
+        <input class="event__input event__input--destination" id="event-destination-${point.id}" type="text" name="event-destination" value="${he.encode(currDest.name)}" list="destination-list-${point.id}" ${(point.isDisabled) ? 'disabled' : ''}>
         <datalist id="destination-list-${point.id}">
           ${createDestinationList(destinationsList)}
         </datalist>
@@ -141,7 +140,7 @@ const createRedactingFormTemplate = (point, offers, destinationsList, isEditForm
       ${generateRollupButton(isEditForm)}
     </header>
     <section class="event__details">
-      ${createEventDetailsTemplate(point, currentDestination, offers, point.isDisabled)}
+      ${createEventDetailsTemplate(point, currDest, offers, point.isDisabled)}
       </section>
   </form>
   </li>`
@@ -161,14 +160,12 @@ export default class RedactingFormView extends AbstractStatefulView {
   constructor({ point = BLANK_POINT, offers, destinations, onFormSubmit, onRollUpButton, onDeleteClick, isEditForm = true }) {
     super();
     this._setState(RedactingFormView.parsePointToState(point, offers));
-
+    this.#offers = offers;
     this.#destinations = destinations;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleRollupButton = onRollUpButton;
     this.#handleDeleteClick = onDeleteClick;
     this.#isEditForm = isEditForm;
-    this.#offers = offers;
-
     this._restoreHandlers();
   }
 
@@ -205,6 +202,7 @@ export default class RedactingFormView extends AbstractStatefulView {
 
   #eventTypeHandler = (evt) => {
     evt.preventDefault();
+    this._setState({ offersIDs: [] });
     this.updateElement({
       type: evt.target.value,
       offers: this.#offers.find((offer) => offer.type === evt.target.value).offers.map((offer) => offer.id),
@@ -311,5 +309,11 @@ export default class RedactingFormView extends AbstractStatefulView {
       this.#toDatepicker.destroy();
       this.#toDatepicker = null;
     }
+  }
+
+  reset(point) {
+    this.updateElement(
+      RedactingFormView.parsePointToState(point, this.#offers),
+    );
   }
 }

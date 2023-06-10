@@ -35,7 +35,7 @@ const sortByTime = (A, B) => {
   return timeB - timeA;
 };
 
-const sortByPrice = (A, B) => (A.basePrice - B.basePrice);
+const sortByPrice = (A, B) => (B.basePrice - A.basePrice);
 
 const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
 

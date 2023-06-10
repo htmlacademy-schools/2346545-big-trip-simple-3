@@ -10,8 +10,8 @@ import { FilterType, SortType, UpdateType, UserAction } from '../const';
 import { filter, sortByDay, sortByPrice } from '../util';
 
 const TimeLimit = {
-  LOWER_LIMIT: 360,
-  UPPER_LIMIT: 1080,
+  LOWER_LIMIT: 300,
+  UPPER_LIMIT: 1000,
 };
 
 export default class BoardPresenter {
@@ -69,8 +69,6 @@ export default class BoardPresenter {
   }
 
   createPoint() {
-    // eslint-disable-next-line no-console
-    console.log(this.#pointsModel);
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init(this.#pointsModel.offers, this.#pointsModel.destinations);
@@ -94,6 +92,8 @@ export default class BoardPresenter {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointsPresenters.get(data.id).init(data, this.#pointsModel.offers, this.#pointsModel.destinations);
+        this.#clearBoard();
+        this.#renderBoard();
         break;
       case UpdateType.MINOR:
         this.#clearBoard();

@@ -40,9 +40,7 @@ export default class FilterView extends AbstractView {
     this.element.addEventListener('change', this.#filterTypeChangeHandler);
   }
 
-  get template() {
-    return createFiltersTemplate(this.#filters);
-  }
+  get template() { return createFiltersTemplate(this.#filters, this.#currentFilter); }
 
   #filterTypeChangeHandler = (evt) => {
     evt.preventDefault();

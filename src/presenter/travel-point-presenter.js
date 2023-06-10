@@ -26,17 +26,14 @@ export default class PointPresenter {
 
   init(point, offers, destinations) {
     this.#point = point;
-
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
-
     this.#pointComponent = new PointView({
       point: this.#point,
       offers: offers,
       destinations: destinations,
       onEditClick: this.#handleEditClick
     });
-
     this.#pointEditComponent = new RedactingFormView({
       point: this.#point,
       offers: offers,
@@ -57,6 +54,7 @@ export default class PointPresenter {
 
     if (this.#mode === Mode.EDITING) {
       replace(this.#pointEditComponent, prevPointEditComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -75,7 +73,7 @@ export default class PointPresenter {
     this.#handleDataChange(
       UserAction.DELETE_POINT,
       UpdateType.MINOR,
-      point
+      point,
     );
   };
 
@@ -121,6 +119,7 @@ export default class PointPresenter {
 
   resetView() {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   }
