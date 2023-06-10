@@ -1,4 +1,4 @@
-//Module 7
+//Module 8
 //Task 1
 
 import BoardPresenter from './presenter/board-presenter';
