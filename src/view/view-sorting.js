@@ -22,7 +22,7 @@ const createSortingTemplate = () => {
 export default class SortingView extends AbstractView {
   #currentSortType = null;
 
-  constructor({currentSortType, onSortTypeChange}) {
+  constructor({ currentSortType, onSortTypeChange }) {
     super();
     this.#currentSortType = currentSortType;
     this._callback.onSortTypeChange = onSortTypeChange;
