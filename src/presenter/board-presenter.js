@@ -97,7 +97,7 @@ export default class BoardPresenter {
         break;
       case UpdateType.MINOR:
         this.#clearBoard();
-        this.#renderBoard();
+        this.#renderBoard()
         break;
       case UpdateType.MAJOR:
         this.#clearBoard({ resetRenderedPointsCount: true, resetSortType: true });

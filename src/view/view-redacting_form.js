@@ -166,9 +166,12 @@ export default class RedactingFormView extends AbstractStatefulView {
     this.#handleRollupButton = onRollUpButton;
     this.#handleDeleteClick = onDeleteClick;
     this.#isEditForm = isEditForm;
+    this._callback.onFormSubmit = onFormSubmit;
+    this._callback.onRollUpButton = onRollUpButton;
+    this._setState(RedactingFormView.parsePointToState(point));
+
     this._restoreHandlers();
   }
-
 
   get template() {
     return createRedactingFormTemplate(this._state, this.#offers, this.#destinations, this.#isEditForm);
@@ -217,7 +220,30 @@ export default class RedactingFormView extends AbstractStatefulView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(RedactingFormView.parseStateToPoint(this._state));
+    this._callback.onFormSubmit(RedactingFormView.parseStateToPoint(this._state));
+  };
+
+  #fromDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate.toISOString(),
+    });
+    this.#toDatepicker.set('minDate', userDate);
+  };
+
+  #offersHandler = (evt) => {
+    evt.preventDefault();
+    const clickedOfferId = this._state.currentTypeOffers.find((offer) => offer.title.split(' ').at(-1) === evt.target.name.split('-').at(-1)).id;
+    const newOffersIds = this._state.offers;
+
+    if (newOffersIds.includes(clickedOfferId)) {
+      newOffersIds.splice(newOffersIds.indexOf(clickedOfferId), 1);
+    }
+    else {
+      newOffersIds.push(clickedOfferId);
+    }
+    this._setState({
+      offers: newOffersIds
+    });
   };
 
   #fromDateChangeHandler = ([userDate]) => {
@@ -313,7 +339,7 @@ export default class RedactingFormView extends AbstractStatefulView {
 
   reset(point) {
     this.updateElement(
-      RedactingFormView.parsePointToState(point, this.#offers),
+      RedactingFormView.parsePointToState(point, this.#offers)
     );
   }
 }

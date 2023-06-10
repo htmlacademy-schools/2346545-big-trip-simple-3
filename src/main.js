@@ -1,6 +1,3 @@
-//Module 7
-//Task 1
-
 import BoardPresenter from './presenter/board-presenter';
 import FilterModel from './model/filter-model';
 import FilterPresenter from './presenter/filter-presenter';

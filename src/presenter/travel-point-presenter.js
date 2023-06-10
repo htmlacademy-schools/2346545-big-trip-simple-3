@@ -17,11 +17,13 @@ export default class PointPresenter {
   #pointListContainer = null;
   #pointComponent = null;
   #pointEditComponent = null;
+  #pointListContainer = null;
 
   constructor({ pointListContainer, onModeChange, onDataChange }) {
     this.#handleDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
     this.#pointListContainer = pointListContainer;
+    this.#handleDataChange = onDataChange;
   }
 
   init(point, offers, destinations) {
@@ -34,6 +36,7 @@ export default class PointPresenter {
       destinations: destinations,
       onEditClick: this.#handleEditClick
     });
+
     this.#pointEditComponent = new RedactingFormView({
       point: this.#point,
       offers: offers,
