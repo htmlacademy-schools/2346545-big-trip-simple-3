@@ -1,5 +1,5 @@
 //Module 8
-//Task 2
+//Task 3
 
 import BoardPresenter from './presenter/board-presenter';
 import FilterModel from './model/filter-model';
